@@ -26,7 +26,8 @@ head xs = case xs of []    -> error "Head of an empty list is illegal!"
                      (x:_) -> x
 
 tail :: [a] -> [a]
-tail (_:y) = y
+tail xs = case xs of []     -> error "Tail of an empty list is illegal!"
+                     (_:xs) -> xs
 
 null :: [a] -> Bool
 null xs = case xs of [] -> True
@@ -34,7 +35,7 @@ null xs = case xs of [] -> True
 
 length :: Integral i => [a] -> i
 length xs = case xs of []     -> 0
-                       (x:xs)  -> 1 + length xs
+                       (x:xs) -> 1 + length xs
 
 sum :: Num a => [a] -> a
 sum xs = case xs of []    -> 0
@@ -50,8 +51,8 @@ reverse xs = case xs of []     -> []
                         
 
 (++) :: [a] -> [a] -> [a]
-(++) xs ys = case xs of []     -> ys
-                        (x:xs) -> x : (xs ++ ys)
+xs ++ ys = case xs of []     -> ys
+                      (x:xs) -> x : xs ++ ys
 
 -- right-associative for performance!
 -- (what?!)
@@ -110,15 +111,20 @@ dropWhile f xs = case xs of []       -> []
 -- init
 -- inits
 
--- subsequences
-
+-- results not exactly equal (in order) to the original but meh
+subsequences :: [a] -> [[a]]
+subsequences xs = case xs of []     -> [[]]
+                             (x:xs) -> subsequences xs ++ map (x:) (subsequences xs)
 -- any
 -- all
 
 -- and
 -- or
 
--- concat
+-- (++) works because x is a list!
+concat :: [[a]] -> [a]
+concat xs = case xs of [] -> []
+                       (x:xs) -> x ++ concat xs 
 
 -- elem using the funciton 'any' above
 
@@ -128,7 +134,9 @@ dropWhile f xs = case xs of []       -> []
 -- (!!)
 
 -- filter
--- map
+map :: (a -> b) -> [a] -> [b]
+map f xs = case xs of []     -> []
+                      (x:xs) -> f x : map f xs
 
 -- cycle
 -- repeat

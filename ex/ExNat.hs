@@ -27,7 +27,7 @@ data Nat = Zero | Succ Nat
 
 instance Show Nat where
     show Zero     = "O" 
-    show (Succ n) = "S" ++ show n
+    show (Succ n) = 'S' : show n
 
 instance Eq Nat where
     (==) Zero Zero         = True
