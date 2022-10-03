@@ -47,8 +47,11 @@ product xs = case xs of []     -> 1
 
 reverse :: [a] -> [a]
 reverse xs = case xs of []     -> []
-                        (x:xs) -> reverse xs ++ [x]
-                        
+                        (x:xs) -> append x (reverse xs)
+
+append :: a -> [a] -> [a]
+append x ys = case ys of []     -> [x]
+                         (y:ys) -> y : append x ys
 
 (++) :: [a] -> [a] -> [a]
 xs ++ ys = case xs of []     -> ys
@@ -86,40 +89,58 @@ maximum xs = case xs of []       -> error "Maximum of an empty list is illegal!"
                         [x]      -> x
                         (x:y:xs) -> if x > y then maximum (x:xs) else maximum (y:xs)
 
-take :: Int -> [a] -> [a]
-take n xs = case (n, xs) of (n, [])     -> []
+take :: Integral i => i -> [a] -> [a]
+take n xs = case (n, xs) of (_, [])     -> []
                             (0, _)      -> []
                             (n, (x:xs)) -> x : take (n - 1) xs
 
-drop :: Int -> [a] -> [a]
-drop n xs = case (n, xs) of (n, [])     -> []
+drop :: Integral i => i -> [a] -> [a]
+drop n xs = case (n, xs) of (_, [])     -> []
                             (0, xs)     -> xs
                             (n, (x:xs)) -> drop (n - 1) xs
 
 takeWhile :: (a -> Bool) -> [a] -> [a]
-takeWhile f xs = case xs of []     -> []
-                            (x:xs) -> if f x 
-                                      then x : takeWhile f xs 
+takeWhile p xs = case xs of []     -> []
+                            (x:xs) -> if p x 
+                                      then x : takeWhile p xs 
                                       else []
 
 dropWhile :: (a -> Bool) -> [a] -> [a]
-dropWhile f xs = case xs of []       -> []
-                            (x:xs) -> if f x 
-                                      then dropWhile f xs 
+dropWhile p xs = case xs of []       -> []
+                            (x:xs) -> if p x 
+                                      then dropWhile p xs 
                                       else x:xs
--- tails
+
+tails :: [a] -> [[a]]
+tails xs = case xs of []         -> [[]]
+                      lst@(_:xs) -> lst : tails xs
+
 -- init
--- inits
+
+inits :: [a] -> [[a]]
+inits xs = case xs of []     -> [[]]
+                      (x:xs) -> [] : map (x:) (inits xs)
 
 -- results not exactly equal (in order) to the original but meh
 subsequences :: [a] -> [[a]]
 subsequences xs = case xs of []     -> [[]]
-                             (x:xs) -> subsequences xs ++ map (x:) (subsequences xs)
--- any
--- all
+                             (x:xs) -> (subsequences xs) ++ map (x:) (subsequences xs)
 
--- and
--- or
+any :: (a -> Bool) -> [a] -> Bool
+any f xs = case xs of []     -> False
+                      (x:xs) -> if f x then True else any f xs
+
+all :: (a -> Bool) -> [a] -> Bool
+all f xs = case xs of []     -> True
+                      (x:xs) -> f x && all f xs
+
+and :: [Bool] -> Bool
+and xs = case xs of []     -> True
+                    (x:xs) -> x && and xs
+
+or :: [Bool] -> Bool
+or xs = case xs of []     -> False
+                   (x:xs) -> x || or xs
 
 -- (++) works because x is a list!
 concat :: [[a]] -> [a]
@@ -127,13 +148,26 @@ concat xs = case xs of [] -> []
                        (x:xs) -> x ++ concat xs 
 
 -- elem using the funciton 'any' above
+elem :: Eq a => a -> [a] -> Bool
+elem = any . (==) -- point-free looks nice
 
 -- elem': same as elem but elementary definition
 -- (without using other functions except (==))
+elem' :: Eq a => a -> [a] -> Bool
+elem' e xs = case xs of []     -> False
+                        (x:xs) -> if e == x then True else elem' e xs
 
--- (!!)
+(!!) :: Integral i => [a] -> i -> a
+xs !! n
+    | n < 0     = error "Negative index is illegal!"
+    | otherwise = xs !!! n
+    where []     !!! _ = error "Index too large!"
+          (x:xs) !!! 0 = x
+          (_:xs) !!! n = xs !!! (n - 1)
 
--- filter
+filter :: (a -> Bool) -> [a] -> [a]
+filter p xs = [ x | x <- xs, p x ]
+
 map :: (a -> b) -> [a] -> [b]
 map f xs = case xs of []     -> []
                       (x:xs) -> f x : map f xs

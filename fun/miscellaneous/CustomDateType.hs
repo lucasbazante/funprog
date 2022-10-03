@@ -7,6 +7,7 @@ data Weekday = Mon
              | Fri 
              | Sat 
              | Sun
+             deriving ( Enum )
 
 instance (Eq Weekday) where
    Mon == Mon = True
