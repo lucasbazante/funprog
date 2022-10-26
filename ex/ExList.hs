@@ -121,7 +121,7 @@ dropWhile p (x:xs) =
 
 tails :: [a] -> [[a]]
 tails []         = [[]]
-tails lst@(_:xs) = lst : tails xs
+tails all@(_:xs) = all : tails xs
 
 -- init
 
