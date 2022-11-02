@@ -22,7 +22,8 @@ showf = showFFloat (Just 2)
 
 instance Show Complex where
     show (Rect a b) = showf a " + " ++ "(" ++ showf b ")i"
-    show (Trig r s) = showf r "(cos " ++ showf s " + i(sin " ++ showf s "))"
+    show (Trig r s) = showf r "(cis " ++ showf s ")"
+    --show (Trig r s) = showf r "(cos " ++ showf s " + i(sin " ++ showf s "))"
         
 instance Eq Complex where
     (Rect a b) == (Rect c d) = a == c && b == d
