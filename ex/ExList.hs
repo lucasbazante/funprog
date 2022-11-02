@@ -7,8 +7,8 @@ import Prelude
     , (.) , ($)
     , flip , curry , uncurry
     , otherwise , error , undefined
-    )
-import qualified Prelude   as P
+    ) 
+import qualified Prelude as P
 import qualified Data.List as L
 import qualified Data.Char as C
 
@@ -183,6 +183,24 @@ filter p (x:xs) =
 map :: (a -> b) -> [a] -> [b]
 map _ []     = []
 map f (x:xs) = f x : map f xs
+
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr _ y []     = y
+foldr f y (x:xs) = f x (foldr f y xs) 
+
+foldl :: (b -> a -> b) -> b -> [a] -> b
+foldl _ y []     = y
+foldl f y (x:xs) = foldl f (f y x) xs
+
+scanr :: (a -> b -> b) -> b -> [a] -> [b]
+scanr _ y []     = [y]
+scanr f y (x:xs) = f x (head rest) : rest
+    where rest = scanr f y xs
+
+scanl :: (b -> a -> b) -> b -> [a] -> [b]
+scanl _ y []     = [y]
+scanl f y (x:xs) = y : scanl f (f y x) xs
+
 
 -- cycle
 -- repeat
