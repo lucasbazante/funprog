@@ -123,7 +123,10 @@ tails :: [a] -> [[a]]
 tails []         = [[]]
 tails all@(_:xs) = all : tails xs
 
--- init
+init :: [a] -> [a]
+init []  = error "Illegal for empty list!"
+init [x] = []
+init (x:xs) = x : init xs
 
 inits :: [a] -> [[a]]
 inits []     = [[]]
@@ -201,6 +204,15 @@ scanl :: (b -> a -> b) -> b -> [a] -> [b]
 scanl _ y []     = [y]
 scanl f y (x:xs) = y : scanl f (f y x) xs
 
+foldr1 :: (a -> a -> a) -> [a] -> a
+foldr1 _ []     = error "Illegal for empty list!"
+foldr1 _ [x]    = x
+foldr1 f (x:xs) = f x (foldr1 f xs)
+
+foldl1 :: (a -> a -> a) -> [a] -> a
+foldl1 _ []     = error "Illegal for empty list!"
+foldl1 _ [x]    = x
+foldl1 f (x:xs) = foldl f x xs
 
 -- cycle
 -- repeat
@@ -210,8 +222,15 @@ scanl f y (x:xs) = y : scanl f (f y x) xs
 -- isInfixOf
 -- isSuffixOf
 
--- zip
--- zipWith
+zip :: [a] -> [b] -> [(a, b)]
+zip [] _         = []
+zip _ []         = []
+zip (x:xs) (y:ys) = (x, y) : zip xs ys
+
+zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+zipWith _ [] _          = []
+zipWith _ _ []          = []
+zipWith f (x:xs) (y:ys) = f x y : zipWith f xs ys
 
 -- intercalate
 -- nub
