@@ -156,7 +156,7 @@ or (x:xs) = x || or xs
 -- (++) works because x is a list!
 concat :: [[a]] -> [a]
 concat []     = []
-concat (x:xs) = x ++ concat xs 
+concat (xs:xss) = xs ++ concat xss
 
 -- elem using the funciton 'any' above
 elem :: Eq a => a -> [a] -> Bool
