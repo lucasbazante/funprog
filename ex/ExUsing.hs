@@ -16,9 +16,9 @@ filter p = concat . map box
 
 -- using zipWith
 sorted :: Ord a => [a] -> Bool
-sorted [] = True
-sorted xs = (and . zipWith (<=) xs) $ tail xs
+sorted []         = True
+sorted all@(_:xs) = (and . zipWith (<=) all) xs
 
 -- using zipWith
 fibs :: Integral i => [i]
-fibs = undefined
+fibs = 0 : 1 : zipWith (+) fibs (tail fibs)
