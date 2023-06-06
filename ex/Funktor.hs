@@ -39,29 +39,3 @@ instance Funktor ((,) e) where
 
 instance Funktor ((->) r) where
   fmap = (.)
-
-class Funktor f => Applikative f where
-  pure :: a -> f a
-  
-  infixl 4 <*> 
-  
-  (<*>) :: f (a -> b) -> f a -> f b
-
-instance Applikative Maybe where
-  pure = Just
-
-  Just f <*> Just x = Just $ f x
-  _ <*> _           = Nothing
-
-instance Applikative [] where
-  pure = repeat
-  fs <*> xs = [f x | f <- fs, x <- xs]
-
-newtype ZipList a = ZipList [a]
-
-instance Funktor ZipList where
-  fmap f (ZipList xs) = ZipList $ fmap f xs
-
-instance Applikative ZipList where
-  pure x = ZipList [x]
-  ZipList fs <*> ZipList xs = ZipList $ zipWith ($) fs xs

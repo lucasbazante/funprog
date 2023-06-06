@@ -165,9 +165,7 @@ filterIO p (x:xs) =
        return (if b then x:xs' else xs')
 
 iomap :: (a -> b) -> IO a -> IO b
-iomap f ax =
-    do x <- ax
-       return $ f x
+iomap f ax = ax >>= (return . f)
 
 mapIO :: (a -> IO b) -> [a] -> IO [b]
 mapIO f = sequenceIO . map f
@@ -195,10 +193,10 @@ replicateIO_ :: Integral i => i -> IO a -> IO ()
 replicateIO_ = undefined
 
 forIO :: [a] -> (a -> IO b) -> IO [b]
-forIO = undefined
+forIO = flip mapIO
 
 forIO_ :: [a] -> (a -> IO b) -> IO ()
-forIO_ = undefined
+forIO_ xs = void . forIO xs
 
 joinIO :: IO (IO a) -> IO a
 joinIO = undefined

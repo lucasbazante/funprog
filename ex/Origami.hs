@@ -105,14 +105,20 @@ map :: (a -> b) -> [a] -> [b]
 map f = foldr ((++).boxf) []
     where boxf x = [f x]
 
+inits :: [a] -> [[a]]
+inits = foldr f [[]]
+    where f x = ([]:) . map (x:)
+
 reverse :: [a] -> [a]
 reverse = foldl (\acc x -> x : acc) [] 
 
 takeWhile :: (a -> Bool) -> [a] -> [a]
-takeWhile = undefined
+takeWhile p = foldr f []
+    where f = \x xs -> if p x then x:xs else []
 
 dropWhile :: (a -> Bool) -> [a] -> [a]
-dropWhile = undefined
+dropWhile p = fst . foldr f ([], [])
+    where f = \x (xs, ys) -> (if p x then xs else x:ys, x:ys)
 
 -- sum of evens, safeMaximum of odds
 -- e.g.:
